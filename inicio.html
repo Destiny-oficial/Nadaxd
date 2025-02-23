@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Offis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .nav-buttons button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .anime-list, .episode-list {
+            max-width: 800px;
+            margin: auto;
+            text-align: left;
+        }
+        .anime-item, .episode-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .anime-item img, .episode-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>Mi Oficina anime</header>
+
+    <div class="nav-buttons">
+        <button onclick="mostrarEpisodios()">Últimos Episodios</button>
+        <button onclick="mostrarAnimes()">Últimos Animes</button>
+    </div>
+
+    <div id="episodios" class="episode-list">
+        <h2>Últimos Episodios</h2>
+        <div class="episode-item" onclick="verAnime('cap1leve.html')">
+            <img src="https://i.ibb.co/TBHg10fn/1739976240285.jpg" alt="logo.png">
+            <span>Solo Leveling - Episodio 1</span>
+        </div>
+        <div class="episode-item" onclick="verAnime('ubel.html')">
+            <img src=" https://i.ibb.co/dsGMLmC9/1739976458819.jpg" alt="Arifureta">
+            <span>Arifureta - Episodio 13</span>
+        </div>
+        <div class="episode-item" onclick="verAnime('ubel.html')">
+            <img src=" https://i.ibb.co/XZk772jR/467aba19b4c4.jpg" alt="guild no uketsukejou">
+            <span>Guild no uketsukejou desu ga - Episodio 8 sub</span>
+        </div>
+    </div>
+
+    <div id="animes" class="anime-list" style="display: none;">
+        <h2>Últimos Animes</h2>
+        <div class="anime-item" onclick="verAnime('levelinginfo.html')">
+            <img src="https://i.ibb.co/TBHg10fn/1739976240285.jpg" alt="solo leveling">
+            <span>solo leveling season 1</span>
+            </div>
+        </div>
+        <div class="episode-item" onclick="verAnime('ubel.html')">
+            <img src=" https://i.ibb.co/Psj0s4PF/1739980391728.jpg" alt="Re Zero">
+            <span>Re:Zero - Episodio 10</span>
+        </div>
+    </div>
+
+    <script>
+        function mostrarEpisodios() {
+            document.getElementById('episodios').style.display = 'block';
+            document.getElementById('animes').style.display = 'none';
+        }
+
+        function mostrarAnimes() {
+            document.getElementById('episodios').style.display = 'none';
+            document.getElementById('animes').style.display = 'block';
+        }
+
+        function verAnime(pagina) {
+            window.location.href = pagina;
+        }
+    </script>
+
+</body>
+</html>
+</body>
+</html>
