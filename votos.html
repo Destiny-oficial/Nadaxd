@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votación de Animes</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .anime { margin: 10px; padding: 10px; border: 1px solid #ccc; display: inline-block; }
+        .ranking { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>Vota por tu Anime Favorito</h1>
+
+    <button onclick="login()">Iniciar sesión con Google</button>
+    <p id="user-info"></p>
+
+    <div id="anime-list"></div>
+    
+    <h2>Clasificación</h2>
+    <div id="ranking"></div>
+
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSqQKDFeVwEYgzZEZRgJJKEPT-iQxCVWU",
+            authDomain: "puntos-50cef.firebaseapp.com",
+            databaseURL: "https://puntos-50cef-default-rtdb.firebaseio.com",
+            projectId: "puntos-50cef",
+            storageBucket: "puntos-50cef.firebasestorage.app",
+            messagingSenderId: "602416916531",
+            appId: "1:602416916531:web:6c6ed7e1ef2b1de90a5b46",
+            measurementId: "G-RBTM7B2B62"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+        const animes = ["Naruto", "One Piece", "Dragon Ball", "Attack on Titan", "Demon Slayer"];
+
+        let currentUser = null;
+
+        function login() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).then(result => {
+                currentUser = result.user;
+                document.getElementById("user-info").innerText = `Bienvenido, ${currentUser.displayName}`;
+                renderAnimes();
+            }).catch(error => {
+                console.error("Error al iniciar sesión:", error);
+            });
+        }
+
+        function renderAnimes() {
+            if (!currentUser) return;
+            const animeList = document.getElementById("anime-list");
+            animeList.innerHTML = "";
+            animes.forEach(anime => {
+                const div = document.createElement("div");
+                div.classList.add("anime");
+                div.innerHTML = `
+                    <h3>${anime}</h3>
+                    <button onclick="vote('${anime}')" id="btn-${anime}">Votar</button>
+                    <p id="votes-left-${anime}">Cargando...</p>
+                `;
+                animeList.appendChild(div);
+                checkVotes(anime);
+            });
+        }
+
+        function checkVotes(anime) {
+            if (!currentUser) return;
+            const userVotesRef = db.ref(`users/${currentUser.uid}/votes/${anime}`);
+            userVotesRef.once("value", snapshot => {
+                const votes = snapshot.val() || 0;
+                const remainingVotes = 3 - votes;
+                document.getElementById(`votes-left-${anime}`).innerText = `Votos restantes: ${remainingVotes}`;
+                if (remainingVotes <= 0) {
+                    document.getElementById(`btn-${anime}`).disabled = true;
+                }
+            });
+        }
+
+        function vote(anime) {
+            if (!currentUser) return alert("Inicia sesión para votar.");
+            const userVotesRef = db.ref(`users/${currentUser.uid}/votes/${anime}`);
+            userVotesRef.transaction(votes => {
+                if (!votes) votes = 0;
+                if (votes >= 3) return; // Si ya votó 3 veces, no hace nada
+                return votes + 1;
+            }).then(() => {
+                // Actualiza el conteo de votos en el ranking general
+                const animeRef = db.ref("votes/" + anime);
+                animeRef.transaction(currentVotes => (currentVotes || 0) + 1);
+                checkVotes(anime);
+            }).catch(error => {
+                console.error("Error al votar:", error);
+            });
+        }
+
+        function updateRanking() {
+            db.ref("votes").orderByValue().on("value", snapshot => {
+                const rankingDiv = document.getElementById("ranking");
+                rankingDiv.innerHTML = "";
+                let rankingArray = [];
+                snapshot.forEach(child => {
+                    rankingArray.push({ name: child.key, votes: child.val() });
+                });
+                rankingArray.sort((a, b) => b.votes - a.votes);
+                rankingArray.forEach((anime, index) => {
+                    rankingDiv.innerHTML += `<p>${index + 1}. ${anime.name} - ${anime.votes} votos</p>`;
+                });
+            });
+        }
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                document.getElementById("user-info").innerText = `Bienvenido, ${user.displayName}`;
+                renderAnimes();
+            } else {
+                currentUser = null;
+                document.getElementById("user-info").innerText = "No has iniciado sesión.";
+                document.getElementById("anime-list").innerHTML = "";
+            }
+        });
+
+        updateRanking();
+    </script>
+
+</body>
+</html>
+<a href=""></a>
