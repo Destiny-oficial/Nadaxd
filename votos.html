@@ -26,6 +26,7 @@
     </div>
 
     <p id="user-info"></p>
+    <p id="votes-left">Cargando votos...</p>
 
     <div id="anime-list"></div>
     
@@ -50,6 +51,7 @@
 
         const animes = ["Naruto", "One Piece", "Dragon Ball", "Attack on Titan", "Demon Slayer"];
         let currentUser = null;
+        let totalVotes = 0;
 
         function register() {
             const email = document.getElementById("email").value;
@@ -68,7 +70,7 @@
                 .then(userCredential => {
                     currentUser = userCredential.user;
                     document.getElementById("user-info").innerText = `Bienvenido, ${currentUser.email}`;
-                    renderAnimes();
+                    checkTotalVotes();
                 })
                 .catch(error => alert("Error: " + error.message));
         }
@@ -78,6 +80,17 @@
                 currentUser = null;
                 document.getElementById("user-info").innerText = "Sesión cerrada.";
                 document.getElementById("anime-list").innerHTML = "";
+                document.getElementById("votes-left").innerText = "Cargando votos...";
+            });
+        }
+
+        function checkTotalVotes() {
+            if (!currentUser) return;
+            const userVotesRef = db.ref(`users/${currentUser.uid}/totalVotes`);
+            userVotesRef.once("value", snapshot => {
+                totalVotes = snapshot.val() || 0;
+                document.getElementById("votes-left").innerText = `Votos restantes: ${3 - totalVotes}`;
+                renderAnimes();
             });
         }
 
@@ -90,39 +103,33 @@
                 div.classList.add("anime");
                 div.innerHTML = `
                     <h3>${anime}</h3>
-                    <button onclick="vote('${anime}')" id="btn-${anime}">Votar</button>
-                    <p id="votes-left-${anime}">Cargando...</p>
+                    <button onclick="vote('${anime}')" ${totalVotes >= 3 ? "disabled" : ""}>Votar</button>
                 `;
                 animeList.appendChild(div);
-                checkVotes(anime);
-            });
-        }
-
-        function checkVotes(anime) {
-            if (!currentUser) return;
-            const userVotesRef = db.ref(`users/${currentUser.uid}/votes/${anime}`);
-            userVotesRef.once("value", snapshot => {
-                const votes = snapshot.val() || 0;
-                const remainingVotes = 3 - votes;
-                document.getElementById(`votes-left-${anime}`).innerText = `Votos restantes: ${remainingVotes}`;
-                if (remainingVotes <= 0) {
-                    document.getElementById(`btn-${anime}`).disabled = true;
-                }
             });
         }
 
         function vote(anime) {
             if (!currentUser) return alert("Inicia sesión para votar.");
-            const userVotesRef = db.ref(`users/${currentUser.uid}/votes/${anime}`);
+            if (totalVotes >= 3) return alert("Ya usaste tus 3 votos.");
+
+            const userVotesRef = db.ref(`users/${currentUser.uid}/totalVotes`);
             userVotesRef.transaction(votes => {
                 if (!votes) votes = 0;
                 if (votes >= 3) return; // Si ya votó 3 veces, no hace nada
                 return votes + 1;
             }).then(() => {
+                totalVotes++;
+                document.getElementById("votes-left").innerText = `Votos restantes: ${3 - totalVotes}`;
+                document.querySelectorAll("button").forEach(btn => {
+                    if (totalVotes >= 3) btn.disabled = true;
+                });
+
                 // Actualiza el conteo de votos en el ranking general
                 const animeRef = db.ref("votes/" + anime);
                 animeRef.transaction(currentVotes => (currentVotes || 0) + 1);
-                checkVotes(anime);
+
+                renderAnimes();
             }).catch(error => {
                 console.error("Error al votar:", error);
             });
@@ -147,11 +154,12 @@
             if (user) {
                 currentUser = user;
                 document.getElementById("user-info").innerText = `Bienvenido, ${user.email}`;
-                renderAnimes();
+                checkTotalVotes();
             } else {
                 currentUser = null;
                 document.getElementById("user-info").innerText = "No has iniciado sesión.";
                 document.getElementById("anime-list").innerHTML = "";
+                document.getElementById("votes-left").innerText = "Cargando votos...";
             }
         });
 
