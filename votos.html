@@ -17,7 +17,14 @@
 
     <h1>Vota por tu Anime Favorito</h1>
 
-    <button onclick="login()">Iniciar sesión con Google</button>
+    <div>
+        <input type="email" id="email" placeholder="Correo electrónico">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="register()">Registrarse</button>
+        <button onclick="login()">Iniciar sesión</button>
+        <button onclick="logout()">Cerrar sesión</button>
+    </div>
+
     <p id="user-info"></p>
 
     <div id="anime-list"></div>
@@ -42,17 +49,35 @@
         const auth = firebase.auth();
 
         const animes = ["Naruto", "One Piece", "Dragon Ball", "Attack on Titan", "Demon Slayer"];
-
         let currentUser = null;
 
+        function register() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    alert("Registro exitoso, ahora inicia sesión.");
+                })
+                .catch(error => alert("Error: " + error.message));
+        }
+
         function login() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider).then(result => {
-                currentUser = result.user;
-                document.getElementById("user-info").innerText = `Bienvenido, ${currentUser.displayName}`;
-                renderAnimes();
-            }).catch(error => {
-                console.error("Error al iniciar sesión:", error);
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            auth.signInWithEmailAndPassword(email, password)
+                .then(userCredential => {
+                    currentUser = userCredential.user;
+                    document.getElementById("user-info").innerText = `Bienvenido, ${currentUser.email}`;
+                    renderAnimes();
+                })
+                .catch(error => alert("Error: " + error.message));
+        }
+
+        function logout() {
+            auth.signOut().then(() => {
+                currentUser = null;
+                document.getElementById("user-info").innerText = "Sesión cerrada.";
+                document.getElementById("anime-list").innerHTML = "";
             });
         }
 
@@ -121,7 +146,7 @@
         auth.onAuthStateChanged(user => {
             if (user) {
                 currentUser = user;
-                document.getElementById("user-info").innerText = `Bienvenido, ${user.displayName}`;
+                document.getElementById("user-info").innerText = `Bienvenido, ${user.email}`;
                 renderAnimes();
             } else {
                 currentUser = null;
@@ -135,4 +160,3 @@
 
 </body>
 </html>
-<a href=""></a>
