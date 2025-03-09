@@ -3,135 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Offis</title>
+    <title>Anime Streaming</title>
     <style>
         body {
+            background-color: #121212;
+            color: white;
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
             text-align: center;
         }
-        header {
-            background: #2c3e50;
-            color: white;
-            padding: 15px;
-            font-size: 24px;
+
+        h2 {
+            margin: 20px 0;
         }
-        .nav-buttons {
+
+        /* Estilos del carrusel */
+        .carousel {
+            width: 100%;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
             display: flex;
             justify-content: center;
-            margin: 10px 0;
         }
-        .nav-buttons button {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            cursor: pointer;
-        }
-        .anime-list, .episode-list {
-            max-width: 800px;
-            margin: auto;
-            text-align: left;
-        }
-        .anime-item, .episode-item {
+
+        .carousel-container {
             display: flex;
-            align-items: center;
-            padding: 10px;
-            background: white;
-            margin: 5px 0;
-            cursor: pointer;
+            gap: 10px;
+            animation: slide 10s infinite linear;
+        }
+
+        .carousel img {
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
             border-radius: 5px;
         }
-        .anime-item img, .episode-item img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
+
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Sección de animes */
+        .anime-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 10px;
+        }
+
+        .anime-grid a {
+            text-decoration: none;
+        }
+
+        .anime-grid img {
+            width: 100px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.3s;
+        }
+
+        .anime-grid img:hover {
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .anime-grid img {
+                width: 80px;
+                height: 120px;
+            }
+            .carousel img {
+                width: 100px;
+                height: 70px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <header>Mi Oficina anime</header>
-
-    <a href="votos.html">recompensas</a>
-
-    <div class="nav-buttons">
-        <button onclick="mostrarEpisodios()">Últimos Episodios</button>
-        <button onclick="mostrarAnimes()">Últimos Animes</button>
-    </div>
-
-    <div id="episodios" class="episode-list">
-        <h2>Últimos Episodios</h2>
-        <div class="episode-item" onclick="verAnime('cap1leve.html')">
-            <img src="https://i.ibb.co/TBHg10fn/1739976240285.jpg" alt="logo.png">
-            <span>Solo Leveling - Episodio 1</span>
-        </div>
-        <div class="episode-item" onclick="verAnime('Arifureta13.html')">
-            <img src=" https://i.ibb.co/dsGMLmC9/1739976458819.jpg" alt="Arifureta">
-            <span>Arifureta - Episodio 13</span>
-        </div>
-        <div class="episode-item" onclick="verAnime('ubel.html')">
-            <img src=" https://i.ibb.co/XZk772jR/467aba19b4c4.jpg" alt="guild no uketsukejou">
-            <span>Guild no uketsukejou desu ga - Episodio 8 sub</span>
-        </div>
-        <div class="episode-item" onclick="verAnime('black.html')">
-            <img src="https://i.ibb.co/BH4CSqKY/IMG-20250223-WA0029.jpg" alt="black-bullet">
-            <span>Black Bullet - Episodio 1</span>
-        </div>
-
-        <p>fandubs exclusivos</p>
-        <div class="episode-item" onclick="verAnime('cap1.html')">
-            <img src=" https://i.ibb.co/27SGX4Bd/IMG-20250223-WA0001.jpg" alt="guild no uketsukejou">
-            <span>Yashahime: Princess Half-Demon cap 1</span>
+    <!-- Carrusel de inicio -->
+    <div class="carousel">
+        <div class="carousel-container">
+            <a href="https://destiny-oficial.github.io/Nadaxd/takt.html"><img src="fondo3.jpg" alt="Anime 1"></a>
+            <a href="https://destiny-oficial.github.io/Nadaxd/black.html"><img src="anime2.jpg" alt="Anime 2"></a>
+            <a href="https://ejemplo.com/anime3"><img src="anime3.jpg" alt="Anime 3"></a>
         </div>
     </div>
 
-    <div id="animes" class="anime-list" style="display: none;">
-        <h2>Últimos Animes</h2>
-        <div class="anime-item" onclick="verAnime('levelinginfo.html')">
-            <img src="https://i.ibb.co/TBHg10fn/1739976240285.jpg" alt="solo leveling">
-            <span>solo leveling season 1</span>
+    <!-- Sección de animes -->
+    <div class="anime-sections">
+        <section>
+            <h2>Recientes</h2>
+            <div class="anime-grid">
+                <a href="https://ejemplo.com/anime4"><img src="fondo4.jpg" alt="Anime Reciente"></a>
+                <a href="https://ejemplo.com/anime5"><img src="fondo5.jpg" alt="Anime Reciente"></a>
+                <a href="https://ejemplo.com/anime6"><img src="fondo1.jpg" alt="Anime Reciente"></a>
             </div>
+        </section>
+
+        <section>
+            <h2>Recomendados</h2>
+            <div class="anime-grid">
+                <a href="https://ejemplo.com/anime7"><img src="js.jpg" alt="Anime Recomendado"></a>
+                <a href="https://ejemplo.com/anime8"><img src="fondo3.jpg" alt="Anime Recomendado"></a>
+                <a href="https://ejemplo.com/anime9"><img src="sj.jpg" alt="Anime Recomendado"></a>
+            </div>
+        </section>
+
+        <section>
+            <h2>En Emisión</h2>
+            <div class="anime-grid">
+                <a href="https://ejemplo.com/anime10"><img src="anime.jpeg" alt="Anime en Emisión"></a>
+                <a href="https://ejemplo.com/anime11"><img src="anime1.jpeg" alt="Anime en Emisión"></a>
+                <a href="https://ejemplo.com/anime12"><img src="anime2.jpg" alt="Anime en Emisión"></a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Carrusel final -->
+    <div class="carousel">
+        <div class="carousel-container">
+            <a href="https://ejemplo.com/anime13"><img src="anime3.jpg" alt="Anime 13"></a>
+            <a href="https://ejemplo.com/anime14"><img src="fondo1.jpg" alt="Anime 14"></a>
+            <a href="https://ejemplo.com/anime15"><img src="anime5.jpeg" alt="Anime 15"></a>
         </div>
-        <div class="episode-item" onclick="verAnime('ubel.html')">
-            <img src=" https://i.ibb.co/Psj0s4PF/1739980391728.jpg" alt="Re Zero">
-            <span>Re:Zero - Episodio 10</span>
-        </div>
-    <div class="anime-item" onclick="verAnime('takt.html')">
-            <img src="https://w0.peakpx.com/wallpaper/712/184/HD-wallpaper-takt-op-destiny-cosette.jpg" alt="solo leveling">
-            <span>Takt Op Destiny </span>
-    </div>
-    <div class="anime-item" onclick="verAnime('oshino.html')">
-            <img src="https://i.ibb.co/tPxWQzDT/18b2612b09143b91560c0ca21ce121f9115e57df5a82e003801e0cf0e17d6a31.jpg" alt="solo leveling">
-            <span>Oshi no Ko </span>
-    </div>
-    <div class="anime-item" onclick="verAnime('juju.html')">
-            <img src="https://i.ibb.co/6JFDsTMp/images-17.jpg" alt="solo leveling">
-            <span>Jujutsu kaisen </span>
-    </div>
     </div>
 
-    <script>
-        function mostrarEpisodios() {
-            document.getElementById('episodios').style.display = 'block';
-            document.getElementById('animes').style.display = 'none';
-        }
-
-        function mostrarAnimes() {
-            document.getElementById('episodios').style.display = 'none';
-            document.getElementById('animes').style.display = 'block';
-        }
-
-        function verAnime(pagina) {
-            window.location.href = pagina;
-        }
-    </script>
-
-</body>
-</html>
 </body>
 </html>
